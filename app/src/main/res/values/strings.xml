@@ -2,4 +2,6 @@
     <string name="app_name">Controle Área Lazer</string>
     <string name="entrar">Entrar</string>
     <string name="text_dadastro">Crie uma conta clicando aqui</string>
+    <string name="title_cadastro">Cadastre-se</string>
+    <string name="cadastar">Cadastrar</string>
 </resources>
