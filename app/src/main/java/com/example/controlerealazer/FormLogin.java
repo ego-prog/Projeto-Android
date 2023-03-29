@@ -8,9 +8,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class FormLogin extends AppCompatActivity {
     private TextView text_tela_cadastro;
-    private ImageView about;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +20,7 @@ public class FormLogin extends AppCompatActivity {
         setContentView(R.layout.activity_form_login);
         getSupportActionBar().hide();
         IniciarComponentes();
+
 
         text_tela_cadastro.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -27,7 +30,7 @@ public class FormLogin extends AppCompatActivity {
             }
         });
 
-        about.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FormLogin.this, About.class);
@@ -39,6 +42,6 @@ public class FormLogin extends AppCompatActivity {
 
     private void IniciarComponentes() {
         text_tela_cadastro = findViewById(R.id.text_tela_cadastro);
-        about = findViewById(R.id.about);
+        fab = findViewById(R.id.fab_about);
     }
 }
