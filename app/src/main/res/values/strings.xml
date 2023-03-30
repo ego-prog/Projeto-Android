@@ -8,4 +8,7 @@
     <string name="emanoel">Emanoel Georgio de Oliveira</string>
     <string name="vinicius">Vinícius Valério de Sá</string>
     <string name="por">por</string>
+    <string name="senha">senha</string>
+    <string name="email">Email</string>
+    <string name="todo">TODO</string>
 </resources>
