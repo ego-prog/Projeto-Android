@@ -4,15 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     android:background="@color/design_default_color_secondary"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-<ImageView
-    android:layout_width="150dp"
-    android:layout_height="150dp"
-    android:src="@drawable/logo"
-    />
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/emanoel" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/vinicius" />
 
 </LinearLayout>
