@@ -59,7 +59,7 @@
             app:layout_constraintTop_toBottomOf="@id/edit_email" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/botao"
+            android:id="@+id/bt_cadastrar"
             style="@style/button"
             android:layout_marginTop="30dp"
             android:text="@string/cadastar"
