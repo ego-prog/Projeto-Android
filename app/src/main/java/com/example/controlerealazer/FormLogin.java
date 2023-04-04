@@ -14,6 +14,7 @@ public class FormLogin extends AppCompatActivity {
     private TextView text_tela_cadastro;
     private FloatingActionButton fab;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
