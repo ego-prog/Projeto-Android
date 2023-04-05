@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".FormCadastro">
@@ -36,33 +36,38 @@
             android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/containerComponents" />
+            app:layout_constraintTop_toTopOf="@id/containerComponents"
+            tools:ignore="VisualLintTextFieldSize"
+            android:autofillHints="" />
 
         <EditText
             android:id="@+id/edit_email"
             style="@style/Edit_text"
-            android:drawableRight="@drawable/ic_email"
+            android:drawableEnd="@drawable/ic_email"
             android:hint="Email"
             android:inputType="textEmailAddress"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_nome" />
+            app:layout_constraintTop_toBottomOf="@id/edit_nome"
+            android:autofillHints="" />
 
         <EditText
             android:id="@+id/edit_senha"
             style="@style/Edit_text"
-            android:drawableRight="@drawable/ic_eye"
+            android:drawableEnd="@drawable/ic_eye"
             android:hint="Senha"
             android:inputType="numberPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_email" />
+            app:layout_constraintTop_toBottomOf="@id/edit_email"
+            android:autofillHints="" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_cadastrar"
             style="@style/button"
             android:layout_marginTop="30dp"
             android:text="@string/cadastar"
+            android:textColor="#009688"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/containerComponents" />

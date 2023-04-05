@@ -41,7 +41,8 @@
             app:layout_constraintEnd_toEndOf="@id/containerComponents"
             app:layout_constraintStart_toStartOf="@id/containerComponents"
             app:layout_constraintTop_toTopOf="@id/containerComponents"
-            android:autofillHints="" />
+            android:autofillHints=""
+            tools:ignore="VisualLintTextFieldSize" />
 
         <EditText
             android:id="@+id/edit_senha"
@@ -52,7 +53,8 @@
             app:layout_constraintEnd_toEndOf="@id/containerComponents"
             app:layout_constraintStart_toStartOf="@id/containerComponents"
             app:layout_constraintTop_toBottomOf="@id/edit_email"
-            android:autofillHints="" />
+            android:autofillHints=""
+            tools:ignore="VisualLintTextFieldSize" />
 
         <Button
             android:id="@+id/outlinedButton"
@@ -107,7 +109,7 @@
             android:src="@drawable/ic_question"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="TODO" />
+            android:contentDescription="About" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

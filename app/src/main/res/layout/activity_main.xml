@@ -12,16 +12,19 @@
     <ImageView
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo"
+        android:contentDescription="@string/logo" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/emanoel" />
+        android:text="@string/emanoel"
+        android:textColor="#004D40" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/vinicius" />
+        android:text="@string/vinicius"
+        android:textColor="#004D40" />
 
 </LinearLayout>
