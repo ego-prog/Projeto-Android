@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "107414615402",
-    "project_id": "projeto-firebase-7554c",
-    "storage_bucket": "projeto-firebase-7554c.appspot.com"
+    "project_number": "74628650601",
+    "project_id": "controle-rea-lazer",
+    "storage_bucket": "controle-rea-lazer.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:107414615402:android:80433ff7d1069d6ae56113",
+        "mobilesdk_app_id": "1:74628650601:android:536fe435e95e39a10674f8",
         "android_client_info": {
           "package_name": "com.example.controlerealazer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "107414615402-7cnpp128ie6a8b10bo3p54l59c4k8ie5.apps.googleusercontent.com",
+          "client_id": "74628650601-mrr9ulpgsedgj43lh71mtetm2o68dqmc.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC-ethnKg3Np8itXc7aMHquaTM6HJZYbCg"
+          "current_key": "AIzaSyAcG0De6K6BZjS5bJpz_-BCoklWxGJDLTE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "107414615402-7cnpp128ie6a8b10bo3p54l59c4k8ie5.apps.googleusercontent.com",
+              "client_id": "74628650601-mrr9ulpgsedgj43lh71mtetm2o68dqmc.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
