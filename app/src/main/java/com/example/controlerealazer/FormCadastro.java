@@ -16,6 +16,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 import java.util.Objects;
 
@@ -30,21 +34,18 @@ public class FormCadastro extends AppCompatActivity {
         setContentView(R.layout.activity_form_cadastro);
         Objects.requireNonNull(getSupportActionBar()).hide();
         IniciarComponentes();
-        bt_cadastrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String nome = edit_nome.getText().toString();
-                String email = edit_email.getText().toString();
-                String senha = edit_senha.getText().toString();
-                if (nome.isEmpty() || email.isEmpty() || senha.isEmpty()) {
-                    Alerta(view, mensagens[0]);
+        bt_cadastrar.setOnClickListener(view -> {
+            String nome = edit_nome.getText().toString();
+            String email = edit_email.getText().toString();
+            String senha = edit_senha.getText().toString();
+            if (nome.isEmpty() || email.isEmpty() || senha.isEmpty()) {
+                Alerta(view, mensagens[0]);
 
-                } else {
-                    CadastrarUsuario(view, email, senha);
-
-                }
+            } else {
+                CadastrarUsuario(view, email, senha);
 
             }
+
         });
     }
 
@@ -54,17 +55,30 @@ public class FormCadastro extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Alerta(view, mensagens[1]);
-                    Intent intent = new Intent(FormCadastro.this,FormLogin.class);
+                    Intent intent = new Intent(FormCadastro.this, FormLogin.class);
                     Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            startActivity(intent);
-                            finish();
-                        }
+                    handler.postDelayed(() -> {
+                        startActivity(intent);
+                        finish();
                     }, 3000);   //3 seconds
 
                 } else {
-                    Alerta(view, mensagens[2]);
+                    String erro;
+                    try {
+                        throw task.getException();
+                    } catch (FirebaseAuthWeakPasswordException e) {
+                        erro = "Digite uma senha com no mínimo 6 caracteres";
+
+                    } catch (FirebaseAuthUserCollisionException e) {
+                        erro = "Esta conta já foi cadastrada";
+
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
+                        erro = "Email inválido";
+
+                    } catch (Exception e) {
+                        erro = "Erro ao cadastrar usuário";
+                    }
+                    Alerta(view, erro);
                 }
 
             }
