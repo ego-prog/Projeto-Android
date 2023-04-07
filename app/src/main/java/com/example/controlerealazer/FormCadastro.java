@@ -7,26 +7,33 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class FormCadastro extends AppCompatActivity {
     private EditText edit_nome, edit_email, edit_senha;
     private Button bt_cadastrar;
-    String[] mensagens = {"Preencha todos os dados", "Cadastro realizado com sucesso", "Erro ao Cadastrar"};
+    final String[] mensagens = {"Preencha todos os dados", "Cadastro realizado com sucesso", "Erro ao Cadastrar"};
+    String usuarioID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +49,19 @@ public class FormCadastro extends AppCompatActivity {
                 Alerta(view, mensagens[0]);
 
             } else {
-                CadastrarUsuario(view, email, senha);
+                CadastrarUsuario(view, email, senha, nome);
 
             }
 
         });
     }
 
-    private void CadastrarUsuario(View view, String email, String senha) {
+    private void CadastrarUsuario(View view, String email, String senha, String nome) {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    SalvarDadosUsuario(nome);
                     Alerta(view, mensagens[1]);
                     Intent intent = new Intent(FormCadastro.this, FormLogin.class);
                     Handler handler = new Handler();
@@ -65,7 +73,7 @@ public class FormCadastro extends AppCompatActivity {
                 } else {
                     String erro;
                     try {
-                        throw task.getException();
+                        throw Objects.requireNonNull(Objects.requireNonNull(task.getException()));
                     } catch (FirebaseAuthWeakPasswordException e) {
                         erro = "Digite uma senha com no mínimo 6 caracteres";
 
@@ -83,6 +91,30 @@ public class FormCadastro extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void SalvarDadosUsuario(String nome) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> usuarios = new HashMap<>();
+        usuarios.put("nome", nome);
+
+        usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DocumentReference documentReference = db.collection("Usuarios").document();
+        documentReference.set(usuarios).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d("db", "Sucesso ao salvar os dados");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("db_erro", "Erro ao salvar os dados" + e.toString());
+                    }
+                });
+
     }
 
     private void IniciarComponentes() {
