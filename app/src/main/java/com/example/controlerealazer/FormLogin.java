@@ -10,14 +10,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -52,16 +48,13 @@ public class FormLogin extends AppCompatActivity {
             startActivity(intent);
         });
 
-        bt_entrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = edit_email.getText().toString();
-                String senha = edit_senha.getText().toString();
-                if (email.isEmpty() || senha.isEmpty()) {
-                    Alerta(v, mensagens[0]);
-                }else{
-                    AutenticarUsuario(v, email, senha);
-                }
+        bt_entrar.setOnClickListener(v -> {
+            String email = edit_email.getText().toString();
+            String senha = edit_senha.getText().toString();
+            if (email.isEmpty() || senha.isEmpty()) {
+                Alerta(v, mensagens[0]);
+            }else{
+                AutenticarUsuario(v, email, senha);
             }
         });
 
@@ -77,27 +70,18 @@ public class FormLogin extends AppCompatActivity {
     }
 
     private void AutenticarUsuario(View v, String email, String senha){
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    progressBar.setVisibility(View.VISIBLE);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            TelaPrincipal();
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, senha).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                progressBar.setVisibility(View.VISIBLE);
+                new Handler().postDelayed(this::TelaPrincipal,3000);
+            }else{
+                String erro;
+                try {
+                    throw Objects.requireNonNull(task.getException());
 
-                        }
-                    },3000);
-                }else{
-                    String erro;
-                    try {
-                        throw task.getException();
-
-                    }catch (Exception e){
-                        erro = "Usuário e/ou Senha invalidos";
-                        Alerta(v,erro);
-                    }
+                }catch (Exception e){
+                    erro = "Usuário e/ou Senha invalidos";
+                    Alerta(v,erro);
                 }
             }
         });

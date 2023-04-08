@@ -41,11 +41,12 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="40dp"
-        android:text="lkjdflafl"
+        android:text=""
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/iconeUser"
         app:layout_constraintTop_toBottomOf="@id/containerUser" />
+
     <ImageView
         android:id="@+id/iconeEmail"
         android:layout_width="50dp"
@@ -55,39 +56,28 @@
         android:src="@drawable/ic_email"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iconeUser" />
+
     <TextView
         android:id="@+id/textEmailUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="40dp"
-        android:text="lkjdflafl@gmail.com"
+        android:text=""
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/iconeEmail"
         app:layout_constraintTop_toBottomOf="@id/textNomeUsuario" />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/buttonDeslogar"
+
+    <Button
+        android:id="@+id/bt_deslogar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/textEmailUsuario"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="20dp"
-        android:layout_margin="20dp"
-
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_margin="25px"
         android:text="Deslogar"
-        android:elevation="16dp"
-        android:textColor="@android:color/white"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        app:layout_constraintStart_toStartOf="@id/buttonDeslogar"
-        app:layout_constraintEnd_toEndOf="@id/buttonDeslogar"
-        app:layout_constraintTop_toTopOf="@id/buttonDeslogar"
-        app:layout_constraintBottom_toBottomOf="@id/buttonDeslogar"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textEmailUsuario" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
