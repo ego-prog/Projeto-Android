@@ -53,7 +53,7 @@ public class FormLogin extends AppCompatActivity {
             String senha = edit_senha.getText().toString();
             if (email.isEmpty() || senha.isEmpty()) {
                 Alerta(v, mensagens[0]);
-            }else{
+            } else {
                 AutenticarUsuario(v, email, senha);
             }
         });
@@ -64,28 +64,29 @@ public class FormLogin extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser usuarioAtual = FirebaseAuth.getInstance().getCurrentUser();
-        if(usuarioAtual != null){
+        if (usuarioAtual != null) {
             TelaPrincipal();
         }
     }
 
-    private void AutenticarUsuario(View v, String email, String senha){
+    private void AutenticarUsuario(View v, String email, String senha) {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, senha).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
+            if (task.isSuccessful()) {
                 progressBar.setVisibility(View.VISIBLE);
-                new Handler().postDelayed(this::TelaPrincipal,3000);
-            }else{
+                new Handler().postDelayed(this::TelaPrincipal, 3000);
+            } else {
                 String erro;
                 try {
                     throw Objects.requireNonNull(task.getException());
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     erro = "Usuário e/ou Senha invalidos";
-                    Alerta(v,erro);
+                    Alerta(v, erro);
                 }
             }
         });
     }
+
     private void Alerta(View view, String mensagem) {
         Snackbar snackbar = Snackbar.make(view, mensagem, Snackbar.LENGTH_SHORT);
         snackbar.setBackgroundTint(Color.WHITE);
@@ -101,7 +102,8 @@ public class FormLogin extends AppCompatActivity {
         bt_entrar = findViewById(R.id.bt_entrar);
         progressBar = findViewById(R.id.progressbar);
     }
-    private void TelaPrincipal(){
+
+    private void TelaPrincipal() {
         Intent intent = new Intent(FormLogin.this, TelaPrincipal.class);
         startActivity(intent);
         finish();
