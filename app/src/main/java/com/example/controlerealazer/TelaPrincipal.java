@@ -1,5 +1,6 @@
 package com.example.controlerealazer;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,21 +46,14 @@ public class TelaPrincipal extends AppCompatActivity {
         bt_deslogar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(TelaPrincipal.this, FormLogin.class);
-                startActivity(intent);
-                finish();
+                deslogar();
             }
         });
 
         bt_excluir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                excluirCadastroUsuario();
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(TelaPrincipal.this, FormLogin.class);
-                startActivity(intent);
-                finish();
+                confirmaExcluirCadastroUsuario();
             }
         });
     }
@@ -89,10 +84,57 @@ public class TelaPrincipal extends AppCompatActivity {
         bt_excluir = findViewById(R.id.bt_excluir);
     }
 
+    private void confirmaExcluirCadastroUsuario() {
+        AlertDialog.Builder msgBox = new AlertDialog.Builder(TelaPrincipal.this);
+        msgBox.setTitle("Excluindo Usuário");
+        msgBox.setMessage("Tem certeza que deseja excluir?");
+        msgBox.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                excluirDadosUsuario();
+                excluirCadastroUsuario();
+                deslogar();
+            }
+        });
+        msgBox.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).show();
+    }
+
     private void excluirCadastroUsuario() {
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+
+        user.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("db", "Sucesso ao excluir Usuário");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("db_erro", "Erro ao excluir Usuário" + e.toString());
+                    }
+                });
+
+    }
+
+    private void deslogar() {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(TelaPrincipal.this, FormLogin.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void excluirDadosUsuario() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
@@ -107,20 +149,6 @@ public class TelaPrincipal extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d("db_erro", "Erro ao excluir os dados" + e.toString());
-                    }
-                });
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        user.delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("db", "Sucesso ao excluir Usuário");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("db_erro", "Erro ao excluir Usuário" + e.toString());
                     }
                 });
 
