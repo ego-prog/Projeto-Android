@@ -79,5 +79,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textEmailUsuario" />
 
+    <Button
+        android:id="@+id/bt_excluir"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/red"
+        android:layout_margin="25px"
+        android:text="Excluir"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bt_deslogar" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
