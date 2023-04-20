@@ -57,52 +57,56 @@ public class FormCadastro extends AppCompatActivity {
     }
 
     private void CadastrarUsuario(View view, String email, String senha, String nome) {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    SalvarDadosUsuario(nome);
-                    Alerta(view, mensagens[1]);
-                    Intent intent = new Intent(FormCadastro.this, FormLogin.class);
-                    Handler handler = new Handler();
-                    handler.postDelayed(() -> {
-                        startActivity(intent);
-                        finish();
-                    }, 3000);   //3 seconds
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, senha)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            SalvarDadosUsuario(nome, email);
+                            Alerta(view, mensagens[1]);
+                            Intent intent = new Intent(FormCadastro.this, FormLogin.class);
+                            Handler handler = new Handler();
+                            handler.postDelayed(() -> {
+                                startActivity(intent);
+                                finish();
+                            }, 3000);   //3 seconds
 
-                } else {
-                    String erro;
-                    try {
-                        throw Objects.requireNonNull(Objects.requireNonNull(task.getException()));
-                    } catch (FirebaseAuthWeakPasswordException e) {
-                        erro = "Digite uma senha com no mínimo 6 caracteres";
+                        } else {
+                            String erro;
+                            try {
+                                throw Objects.requireNonNull(Objects.requireNonNull(task.getException()));
+                            } catch (FirebaseAuthWeakPasswordException e) {
+                                erro = "Digite uma senha com no mínimo 6 caracteres";
 
-                    } catch (FirebaseAuthUserCollisionException e) {
-                        erro = "Esta conta já foi cadastrada";
+                            } catch (FirebaseAuthUserCollisionException e) {
+                                erro = "Esta conta já foi cadastrada";
 
-                    } catch (FirebaseAuthInvalidCredentialsException e) {
-                        erro = "Email inválido";
+                            } catch (FirebaseAuthInvalidCredentialsException e) {
+                                erro = "Email inválido";
 
-                    } catch (Exception e) {
-                        erro = "Erro ao cadastrar usuário";
+                            } catch (Exception e) {
+                                erro = "Erro ao cadastrar usuário";
+                            }
+                            Alerta(view, erro);
+                        }
+
                     }
-                    Alerta(view, erro);
-                }
-
-            }
-        });
+                });
     }
 
-    private void SalvarDadosUsuario(String nome) {
+    private void SalvarDadosUsuario(String nome, String email) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> usuarios = new HashMap<>();
         usuarios.put("nome", nome);
+        usuarios.put("email", email);
 
         usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
-        documentReference.set(usuarios).addOnSuccessListener(new OnSuccessListener<Void>() {
+        documentReference
+                .set(usuarios)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Log.d("db", "Sucesso ao salvar os dados");

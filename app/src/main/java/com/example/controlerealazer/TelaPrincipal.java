@@ -32,8 +32,9 @@ import java.util.Objects;
 public class TelaPrincipal extends AppCompatActivity {
     private TextView nomeUsuario, emailUsuario;
     private Button bt_deslogar, bt_excluir;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String usuarioID;
+    private FirebaseFirestore db;
+    private String usuarioID;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,26 +44,27 @@ public class TelaPrincipal extends AppCompatActivity {
 
         iniciarComponentes();
 
-        bt_deslogar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deslogar();
-            }
-        });
+        bt_deslogar
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deslogar();
+                    }
+                });
 
-        bt_excluir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                confirmaExcluirCadastroUsuario();
-            }
-        });
+        bt_excluir
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        confirmaExcluirCadastroUsuario();
+                    }
+                });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
 
         documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -78,6 +80,9 @@ public class TelaPrincipal extends AppCompatActivity {
     }
 
     private void iniciarComponentes() {
+        db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         nomeUsuario = findViewById(R.id.textNomeUsuario);
         emailUsuario = findViewById(R.id.textEmailUsuario);
         bt_deslogar = findViewById(R.id.bt_deslogar);
@@ -105,11 +110,6 @@ public class TelaPrincipal extends AppCompatActivity {
     }
 
     private void excluirCadastroUsuario() {
-
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-
         user.delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -136,9 +136,8 @@ public class TelaPrincipal extends AppCompatActivity {
     private void excluirDadosUsuario() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
-        documentReference.delete()
+        db.collection("Usuarios").document(usuarioID)
+                .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
