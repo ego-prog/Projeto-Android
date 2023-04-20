@@ -11,4 +11,7 @@
     <string name="senha">senha</string>
     <string name="email">Email</string>
     <string name="logo">Logo</string>
+    <string name="deslogar">Deslogar</string>
+    <string name="excluir">Excluir</string>
+    <string name="editar">Editar</string>
 </resources>
