@@ -159,12 +159,12 @@ public class TelaPrincipal extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Log.d("db", "Sucesso ao excluir os dados");
+                        Log.d("db", "Sucesso ao Alterar os dados");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("db_erro", "Erro ao excluir os dados" + e.toString());
+                        Log.d("db_erro", "Erro ao Alterar os dados" + e.toString());
                     }
                 });
     }

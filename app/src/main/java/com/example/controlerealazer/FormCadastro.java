@@ -1,8 +1,5 @@
 package com.example.controlerealazer;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,9 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
@@ -109,18 +107,8 @@ public class FormCadastro extends AppCompatActivity {
         DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
         documentReference
                 .set(usuarios)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("db", "Sucesso ao salvar os dados");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("db_erro", "Erro ao salvar os dados" + e.toString());
-                    }
-                });
+                .addOnSuccessListener(unused -> Log.d("db", "Sucesso ao Criar os dados"))
+                .addOnFailureListener(e -> Log.d("db_erro", "Erro ao Criar os dados" + e));
 
     }
 
