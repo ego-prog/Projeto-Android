@@ -10,13 +10,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -82,7 +79,7 @@ public class TelaPrincipal extends AppCompatActivity {
 
     private void confirmaExcluirCadastroUsuario() {
         AlertDialog.Builder msgBox = new AlertDialog.Builder(TelaPrincipal.this);
-        msgBox.setTitle("Excluindo Usuário");
+        msgBox.setTitle("Excluir Usuário");
         msgBox.setMessage("Tem certeza que deseja excluir?");
         msgBox.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
             @Override
@@ -108,22 +105,12 @@ public class TelaPrincipal extends AppCompatActivity {
     }
 
     private void excluirCadastroUsuario() {
-        user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d("db", "Sucesso ao excluir Usuário");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("db_erro", "Erro ao excluir Usuário" + e.toString());
-            }
-        });
-
+        user.delete()
+                .addOnSuccessListener(unused -> Log.d("db", "Sucesso ao excluir Usuário"))
+                .addOnFailureListener(e -> Log.d("db_erro", "Erro ao excluir Usuário" + e));
     }
 
     private void deslogar() {
-
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(TelaPrincipal.this, FormLogin.class);
         startActivity(intent);
@@ -137,17 +124,8 @@ public class TelaPrincipal extends AppCompatActivity {
         db.collection("Usuarios")
                 .document(usuarioID)
                 .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("db", "Sucesso ao excluir os dados");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("db_erro", "Erro ao excluir os dados" + e.toString());
-                    }
-                });
+                .addOnSuccessListener(unused -> Log.d("db", "Sucesso ao excluir os dados"))
+                .addOnFailureListener(e -> Log.d("db_erro", "Erro ao excluir os dados" + e));
     }
 
     private void editarDados() {
@@ -156,16 +134,7 @@ public class TelaPrincipal extends AppCompatActivity {
         db.collection("Usuarios")
                 .document(usuarioID)
                 .update("nome", nomeUsuario.getText().toString())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("db", "Sucesso ao Alterar os dados");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("db_erro", "Erro ao Alterar os dados" + e.toString());
-                    }
-                });
+                .addOnSuccessListener(unused -> Log.d("db", "Sucesso ao Alterar os dados"))
+                .addOnFailureListener(e -> Log.d("db_erro", "Erro ao Alterar os dados" + e));
     }
 }

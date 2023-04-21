@@ -27,7 +27,7 @@ public class FormLogin extends AppCompatActivity {
     private Button bt_entrar;
     private ProgressBar progressBar;
 
-    final String[] mensagens = {"Preencha todos os dados", "Login efetuado com sucesso"};
+    final String[] mensagens = {"Preencha todos os dados", "Login realizado com sucesso"};
 
 
     @Override
@@ -54,6 +54,7 @@ public class FormLogin extends AppCompatActivity {
             String senha = edit_senha.getText().toString();
             if (email.isEmpty() || senha.isEmpty()) {
                 Alerta(v, mensagens[0]);
+                new Handler().postDelayed(() -> progressBar.setVisibility(View.INVISIBLE), 1500);
             } else {
                 AutenticarUsuario(v, email, senha);
             }
