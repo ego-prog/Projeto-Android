@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,6 +35,7 @@ public class FormCadastro extends AppCompatActivity {
     private Button bt_cadastrar;
     final String[] mensagens = {"Preencha todos os dados", "Cadastro realizado com sucesso", "Erro ao Cadastrar"};
     String usuarioID;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class FormCadastro extends AppCompatActivity {
                 Alerta(view, mensagens[0]);
 
             } else {
+                progressBar.setVisibility(View.VISIBLE);
                 CadastrarUsuario(view, email, senha, nome);
 
             }
@@ -126,6 +129,7 @@ public class FormCadastro extends AppCompatActivity {
         edit_email = findViewById(R.id.edit_email);
         edit_senha = findViewById(R.id.edit_senha);
         bt_cadastrar = findViewById(R.id.bt_cadastrar);
+        progressBar = findViewById(R.id.progressbar);
     }
 
     private void Alerta(View view, String mensagem) {
