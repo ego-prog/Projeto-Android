@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,7 @@ public class TelaPrincipal extends AppCompatActivity {
     private FirebaseFirestore db;
     private String usuarioID;
     private FirebaseUser user;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,7 @@ public class TelaPrincipal extends AppCompatActivity {
         bt_deslogar = findViewById(R.id.bt_deslogar);
         bt_excluir = findViewById(R.id.bt_excluir);
         bt_editar = findViewById(R.id.bt_editar);
+        progressBar = findViewById(R.id.progressbar);
     }
 
     private void confirmaExcluirCadastroUsuario() {
@@ -84,15 +87,15 @@ public class TelaPrincipal extends AppCompatActivity {
         msgBox.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                progressBar.setVisibility(View.VISIBLE);
                 excluirDadosUsuario();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
+                excluirCadastroUsuario();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
                     public void run() {
-//                        excluirCadastroUsuario();
+                        deslogar();
                     }
-                }, 4000);
-
-//                excluirCadastroUsuario();
+                }, 3000);
 //                deslogar();
             }
         });
@@ -120,12 +123,12 @@ public class TelaPrincipal extends AppCompatActivity {
     }
 
     private void deslogar() {
-        new Handler().postDelayed(() -> {
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(TelaPrincipal.this, FormLogin.class);
-            startActivity(intent);
-            finish();
-        }, 3000);
+
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(TelaPrincipal.this, FormLogin.class);
+        startActivity(intent);
+        finish();
+
     }
 
     private void excluirDadosUsuario() {

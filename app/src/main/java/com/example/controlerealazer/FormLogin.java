@@ -49,6 +49,7 @@ public class FormLogin extends AppCompatActivity {
         });
 
         bt_entrar.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
             String email = edit_email.getText().toString();
             String senha = edit_senha.getText().toString();
             if (email.isEmpty() || senha.isEmpty()) {
@@ -72,7 +73,6 @@ public class FormLogin extends AppCompatActivity {
     private void AutenticarUsuario(View v, String email, String senha) {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, senha).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                progressBar.setVisibility(View.VISIBLE);
                 new Handler().postDelayed(this::TelaPrincipal, 3000);
             } else {
                 String erro;
@@ -81,6 +81,7 @@ public class FormLogin extends AppCompatActivity {
 
                 } catch (Exception e) {
                     erro = "Usuário e/ou Senha invalidos";
+                    progressBar.setVisibility(View.INVISIBLE);
                     Alerta(v, erro);
                 }
             }
