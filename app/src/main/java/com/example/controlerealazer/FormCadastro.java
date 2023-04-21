@@ -58,7 +58,8 @@ public class FormCadastro extends AppCompatActivity {
     }
 
     private void CadastrarUsuario(View view, String email, String senha, String nome) {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, senha)
+        FirebaseAuth.getInstance()
+                .createUserWithEmailAndPassword(email, senha)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {

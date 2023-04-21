@@ -81,27 +81,16 @@ public class TelaPrincipal extends AppCompatActivity {
         AlertDialog.Builder msgBox = new AlertDialog.Builder(TelaPrincipal.this);
         msgBox.setTitle("Excluir Usuário");
         msgBox.setMessage("Tem certeza que deseja excluir?");
-        msgBox.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                progressBar.setVisibility(View.VISIBLE);
-                excluirDadosUsuario();
-                excluirCadastroUsuario();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        deslogar();
-                    }
-                }, 3000);
-//                deslogar();
-            }
+        msgBox.setPositiveButton("Sim", (dialog, which) -> {
+            progressBar.setVisibility(View.VISIBLE);
+            excluirDadosUsuario();
+            excluirCadastroUsuario();
+            Handler handler = new Handler();
+            handler.postDelayed(this::deslogar, 2000);
         });
-        msgBox.setNegativeButton("Não", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        }).show();
+        msgBox.setNegativeButton("Não", (dialog, which) -> {
+                })
+                .show();
     }
 
     private void excluirCadastroUsuario() {

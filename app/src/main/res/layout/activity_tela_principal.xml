@@ -64,11 +64,10 @@
             android:inputType="text"
             android:minWidth="48dp"
             android:minHeight="48dp"
-
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/iconeUser"
-            app:layout_constraintTop_toBottomOf="@id/containerUser"
+            app:layout_constraintBottom_toBottomOf="@id/iconeUser"
             tools:ignore="LabelFor" />
 
         <ImageView
@@ -87,17 +86,20 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="40dp"
+            android:layout_marginBottom="15dp"
             android:text=""
+            android:textColor="@color/gray"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/iconeEmail"
-            app:layout_constraintTop_toBottomOf="@id/textNomeUsuario" />
+            app:layout_constraintBottom_toBottomOf="@id/iconeEmail"
+            app:layout_constraintStart_toEndOf="@id/iconeEmail" />
 
         <Button
             android:id="@+id/bt_deslogar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="25dp"
+            android:layout_marginHorizontal="25dp"
+            android:layout_marginTop="25dp"
             android:text="@string/deslogar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -108,7 +110,8 @@
             android:id="@+id/bt_editar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="25dp"
+            android:layout_marginHorizontal="25dp"
+            android:layout_marginVertical="5dp"
             android:backgroundTint="@color/green"
             android:text="@string/editar"
             android:textColor="@color/white"
@@ -120,14 +123,14 @@
             android:id="@+id/bt_excluir"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="25dp"
+            android:layout_marginHorizontal="25dp"
+            android:layout_marginVertical="5dp"
             android:backgroundTint="@color/red"
             android:text="@string/excluir"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bt_editar" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
