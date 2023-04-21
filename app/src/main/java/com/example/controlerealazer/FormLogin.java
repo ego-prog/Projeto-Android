@@ -81,7 +81,7 @@ public class FormLogin extends AppCompatActivity {
                     throw Objects.requireNonNull(task.getException());
 
                 } catch (Exception e) {
-                    erro = "Usuário e/ou Senha invalidos";
+                    erro = "Usuário e/ou Senha inválidos";
                     progressBar.setVisibility(View.INVISIBLE);
                     Alerta(v, erro);
                 }
