@@ -14,4 +14,6 @@
     <string name="deslogar">Deslogar</string>
     <string name="excluir">Excluir</string>
     <string name="editar">Editar</string>
+    <string name="icone_user">Icone User</string>
+    <string name="icone_email">Icone Email</string>
 </resources>

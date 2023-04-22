@@ -10,13 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -60,39 +56,37 @@ public class FormCadastro extends AppCompatActivity {
     private void CadastrarUsuario(View view, String email, String senha, String nome) {
         FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(email, senha)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            SalvarDadosUsuario(nome, email);
-                            Alerta(view, mensagens[1]);
-                            Intent intent = new Intent(FormCadastro.this, FormLogin.class);
-                            Handler handler = new Handler();
-                            handler.postDelayed(() -> {
-                                startActivity(intent);
-                                finish();
-                            }, 3000);   //3 seconds
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        SalvarDadosUsuario(nome, email);
+                        Alerta(view, mensagens[1]);
+                        Intent intent = new Intent(FormCadastro.this, FormLogin.class);
+                        Handler handler = new Handler();
+                        handler.postDelayed(() -> {
+                            startActivity(intent);
+                            finish();
+                        }, 3000);   //3 seconds
 
-                        } else {
-                            String erro;
-                            try {
-                                throw Objects.requireNonNull(Objects.requireNonNull(task.getException()));
-                            } catch (FirebaseAuthWeakPasswordException e) {
-                                erro = "Digite uma senha com no mínimo 6 caracteres";
+                    } else {
+                        String erro;
+                        new Handler().postDelayed(() -> progressBar.setVisibility(View.INVISIBLE), 1500);
+                        try {
+                            throw Objects.requireNonNull(Objects.requireNonNull(task.getException()));
+                        } catch (FirebaseAuthWeakPasswordException e) {
+                            erro = "Digite uma senha com no mínimo 6 caracteres";
 
-                            } catch (FirebaseAuthUserCollisionException e) {
-                                erro = "Esta conta já foi cadastrada";
+                        } catch (FirebaseAuthUserCollisionException e) {
+                            erro = "Esta conta já foi cadastrada";
 
-                            } catch (FirebaseAuthInvalidCredentialsException e) {
-                                erro = "Email inválido";
+                        } catch (FirebaseAuthInvalidCredentialsException e) {
+                            erro = "Email inválido";
 
-                            } catch (Exception e) {
-                                erro = "Erro ao cadastrar usuário";
-                            }
-                            Alerta(view, erro);
+                        } catch (Exception e) {
+                            erro = "Erro ao cadastrar usuário";
                         }
-
+                        Alerta(view, erro);
                     }
+
                 });
     }
 
@@ -103,7 +97,7 @@ public class FormCadastro extends AppCompatActivity {
         usuarios.put("nome", nome);
         usuarios.put("email", email);
 
-        usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        usuarioID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
         documentReference
