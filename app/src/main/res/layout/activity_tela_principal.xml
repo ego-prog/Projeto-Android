@@ -36,12 +36,12 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:contentDescription="@string/icone_user"
             android:src="@drawable/ic_user"
             app:layout_constraintBottom_toBottomOf="@id/containerUser"
             app:layout_constraintEnd_toEndOf="@id/containerUser"
             app:layout_constraintStart_toStartOf="@id/containerUser"
-            app:layout_constraintTop_toTopOf="@id/containerUser"
-            android:contentDescription="@string/icone_user" />
+            app:layout_constraintTop_toTopOf="@id/containerUser" />
 
         <ImageView
             android:id="@+id/iconeUser"
@@ -49,26 +49,26 @@
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="30dp"
+            android:contentDescription="@string/icone_user"
             android:src="@drawable/ic_user"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/containerUser"
-            android:contentDescription="@string/icone_user" />
+            app:layout_constraintTop_toBottomOf="@id/containerUser" />
 
         <EditText
             android:id="@+id/textNomeUsuario"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="40dp"
             android:background="@null"
+            android:importantForAutofill="no"
             android:inputType="text"
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/iconeUser"
             app:layout_constraintBottom_toBottomOf="@id/iconeUser"
-            tools:ignore="LabelFor" />
+            app:layout_constraintStart_toEndOf="@id/iconeUser"
+            tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
         <ImageView
             android:id="@+id/iconeEmail"
@@ -76,10 +76,10 @@
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
+            android:contentDescription="@string/icone_email"
             android:src="@drawable/ic_email"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iconeUser"
-            android:contentDescription="@string/icone_email" />
+            app:layout_constraintTop_toBottomOf="@id/iconeUser" />
 
         <TextView
             android:id="@+id/textEmailUsuario"
@@ -133,5 +133,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bt_editar" />
 
+        <Button
+            android:id="@+id/bt_foto"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:background="@drawable/bg_button_img_rounded"
+            android:text="@string/photo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imagefoto"
+            android:layout_width="134dp"
+            android:layout_height="137dp"
+            app:layout_constraintBottom_toBottomOf="@id/bt_foto"
+            app:layout_constraintEnd_toEndOf="@id/bt_foto"
+            app:layout_constraintStart_toStartOf="@id/bt_foto"
+            app:layout_constraintTop_toTopOf="@id/bt_foto"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

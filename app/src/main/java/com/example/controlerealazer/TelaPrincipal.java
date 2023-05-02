@@ -1,14 +1,20 @@
 package com.example.controlerealazer;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,15 +23,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
 import java.util.Objects;
+import java.util.UUID;
 
 public class TelaPrincipal extends AppCompatActivity {
     private TextView nomeUsuario, emailUsuario;
-    private Button bt_deslogar, bt_excluir, bt_editar;
+    private Button bt_deslogar, bt_excluir, bt_editar, bt_foto;
     private FirebaseFirestore db;
     private String usuarioID;
     private FirebaseUser user;
     private ProgressBar progressBar;
+    private ImageView imageFoto;
+    private Uri mSelectedUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,12 @@ public class TelaPrincipal extends AppCompatActivity {
         bt_excluir.setOnClickListener(v -> confirmaExcluirCadastroUsuario());
 
         bt_editar.setOnClickListener(v -> editarDados());
+        bt_foto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selecionarFoto();
+            }
+        });
     }
 
     @Override
@@ -67,6 +83,8 @@ public class TelaPrincipal extends AppCompatActivity {
         bt_excluir = findViewById(R.id.bt_excluir);
         bt_editar = findViewById(R.id.bt_editar);
         progressBar = findViewById(R.id.progressbar);
+        bt_foto = findViewById(R.id.bt_foto);
+        imageFoto = findViewById(R.id.imagefoto);
     }
 
     private void confirmaExcluirCadastroUsuario() {
@@ -111,11 +129,34 @@ public class TelaPrincipal extends AppCompatActivity {
 
     private void editarDados() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String filename = UUID.randomUUID().toString();
+//        final StoregeReference ref = FirebaseFirestore.getInstance().get
         db.collection("Usuarios")
                 .document(usuarioID)
                 .update("nome", nomeUsuario.getText().toString())
                 .addOnSuccessListener(unused -> Log.d("db", "Sucesso ao Alterar os dados"))
                 .addOnFailureListener(e -> Log.d("db_erro", "Erro ao Alterar os dados" + e));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            mSelectedUri = data.getData();
+            Bitmap bitmap = null;
+            try {
+               bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mSelectedUri);
+               imageFoto.setImageDrawable(new BitmapDrawable(bitmap));
+               bt_foto.setAlpha(0);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void selecionarFoto() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, 0);
     }
 }
