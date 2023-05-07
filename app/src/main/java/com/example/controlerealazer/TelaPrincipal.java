@@ -2,6 +2,8 @@ package com.example.controlerealazer;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -13,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,18 +24,22 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TelaPrincipal extends AppCompatActivity {
-    private TextView nomeUsuario, emailUsuario;
+    private TextView nomeUsuarioTextView, emailUsuarioTextView, debugTextView;
     private Button bt_deslogar, bt_excluir, bt_editar;
     private FirebaseFirestore db;
-    private String usuarioID;
+    private String usuarioID, nomeUser, fotoEmString;
     private FirebaseUser user;
     private ProgressBar progressBar;
-    private CircleImageView imageFoto;
+    private CircleImageView fotoImageView;
     private ImageView ic_camera;
 
     @Override
@@ -49,6 +56,7 @@ public class TelaPrincipal extends AppCompatActivity {
         ic_camera.setOnClickListener(v -> selecionarFoto());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onStart() {
         super.onStart();
@@ -57,10 +65,14 @@ public class TelaPrincipal extends AppCompatActivity {
 
         documentReference.addSnapshotListener((documentSnapshot, error) -> {
             if (documentSnapshot != null) {
-                nomeUsuario.setText(documentSnapshot.getString("nome"));
-                emailUsuario.setText(email);
+                nomeUser = documentSnapshot.getString("nome");
+                fotoEmString = documentSnapshot.getString("foto");
+                nomeUsuarioTextView.setText(documentSnapshot.getString("nome"));
+                emailUsuarioTextView.setText(email);
+                byte[] imageEMBytes = Base64.getDecoder().decode(fotoEmString);
+                Bitmap imagemDecodificada = BitmapFactory.decodeByteArray(imageEMBytes, 0, imageEMBytes.length);
+                fotoImageView.setImageBitmap(imagemDecodificada);
             }
-
         });
     }
 
@@ -68,14 +80,15 @@ public class TelaPrincipal extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         usuarioID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-        nomeUsuario = findViewById(R.id.textNomeUsuario);
-        emailUsuario = findViewById(R.id.textEmailUsuario);
+        nomeUsuarioTextView = findViewById(R.id.textNomeUsuario);
+        emailUsuarioTextView = findViewById(R.id.textEmailUsuario);
         bt_deslogar = findViewById(R.id.bt_deslogar);
         bt_excluir = findViewById(R.id.bt_excluir);
         bt_editar = findViewById(R.id.bt_editar);
         progressBar = findViewById(R.id.progressbar);
-        imageFoto = findViewById(R.id.imagefoto);
+        fotoImageView = findViewById(R.id.imagefoto);
         ic_camera = findViewById(R.id.ic_camera);
+        debugTextView = findViewById(R.id.DEBUG);
     }
 
     private void confirmaExcluirCadastroUsuario() {
@@ -120,13 +133,33 @@ public class TelaPrincipal extends AppCompatActivity {
 
     private void editarDados() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Usuarios")
+        DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
+        documentReference.addSnapshotListener((documentSnapshot, error) -> {
+            if (documentSnapshot != null) {
+                nomeUser = documentSnapshot.getString("nome");
+                fotoEmString = documentSnapshot.getString("foto");
+            }
+        });
+
+        if (nomeUser != nomeUsuarioTextView.getText().toString()) {
+            Map<String, Object> usuarioHashMap = new HashMap<>();
+            usuarioHashMap.put("nome", nomeUsuarioTextView.getText().toString());
+            usuarioHashMap.put("foto", fotoEmString);
+            db.collection("Usuarios")
+                    .document(usuarioID)
+                    .update(usuarioHashMap)
+                    .addOnSuccessListener(unused -> Log.d("db_sucesso", "Sucesso ao EDITAR os dados" + usuarioHashMap))
+                    .addOnFailureListener(e -> Log.d("db_erro", "Erro ao EDITAR os dados" + e));
+
+        }
+       /* db.collection("Usuarios")
                 .document(usuarioID)
                 .update("nome", nomeUsuario.getText().toString())
                 .addOnSuccessListener(unused -> Log.d("db", "Sucesso ao Alterar os dados"))
-                .addOnFailureListener(e -> Log.d("db_erro", "Erro ao Alterar os dados" + e));
+                .addOnFailureListener(e -> Log.d("db_erro", "Erro ao Alterar os dados" + e));*/
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -134,7 +167,21 @@ public class TelaPrincipal extends AppCompatActivity {
             try {
                 assert data != null;
                 Bitmap fotoRegistrada = (Bitmap) data.getExtras().get("data");
-                imageFoto.setImageBitmap(fotoRegistrada);
+                fotoImageView.setImageBitmap(fotoRegistrada);
+                byte[] fotoEmBytes;
+                ByteArrayOutputStream streamDaFotoEmBytes = new ByteArrayOutputStream();
+                fotoRegistrada.compress(Bitmap.CompressFormat.PNG, 70, streamDaFotoEmBytes);
+                fotoEmBytes = streamDaFotoEmBytes.toByteArray();
+                fotoEmString = Base64.getEncoder().encodeToString(fotoEmBytes);
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Map<String, Object> usuarioHashMap = new HashMap<>();
+                usuarioHashMap.put("foto", fotoEmString);
+                db.collection("Usuarios")
+                        .document(usuarioID)
+                        .update(usuarioHashMap)
+                        .addOnSuccessListener(unused -> Log.d("db_sucesso", "Sucesso ao EDITAR os dados"))
+                        .addOnFailureListener(e -> Log.d("db_erro", "Erro ao EDITAR os dados" + e));
+
             } catch (Exception e) {
                 Log.e("Camera", "Erro ao carregar foto" + e);
             }

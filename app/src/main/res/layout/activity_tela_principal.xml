@@ -23,18 +23,17 @@
             app:layout_constraintTop_toTopOf="@id/iconeUser" />
 
 
-
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imagefoto"
             android:layout_width="150dp"
             android:layout_height="150dp"
+            android:layout_marginTop="40dp"
             android:src="@drawable/ic_user"
             app:civ_border_width="3dp"
-            android:layout_marginTop="40dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/ic_camera"
             android:layout_width="wrap_content"
@@ -42,8 +41,8 @@
             android:src="@drawable/ica_photo_camera"
 
             app:layout_constraintBottom_toBottomOf="@id/imagefoto"
-            app:layout_constraintEnd_toEndOf="@id/imagefoto"
-            />
+            app:layout_constraintEnd_toEndOf="@id/imagefoto" />
+
         <ImageView
             android:id="@+id/iconeUser"
             android:layout_width="50dp"
@@ -133,6 +132,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bt_editar" />
 
-
+        <TextView
+            android:id="@+id/DEBUG"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

@@ -96,6 +96,7 @@ public class FormCadastro extends AppCompatActivity {
         Map<String, Object> usuarios = new HashMap<>();
         usuarios.put("nome", nome);
         usuarios.put("email", email);
+        usuarios.put("foto", "");
 
         usuarioID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
