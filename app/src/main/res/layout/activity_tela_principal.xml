@@ -44,6 +44,14 @@
             app:layout_constraintEnd_toEndOf="@id/imagefoto" />
 
         <ImageView
+            android:id="@+id/delete_foto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintBottom_toBottomOf="@id/ic_camera"
+            app:layout_constraintStart_toEndOf="@id/ic_camera" />
+
+        <ImageView
             android:id="@+id/iconeUser"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -132,12 +140,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bt_editar" />
 
-        <TextView
-            android:id="@+id/DEBUG"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

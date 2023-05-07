@@ -3,6 +3,7 @@ package com.example.controlerealazer;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,14 +34,14 @@ import java.util.Objects;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TelaPrincipal extends AppCompatActivity {
-    private TextView nomeUsuarioTextView, emailUsuarioTextView, debugTextView;
+    private TextView nomeUsuarioTextView, emailUsuarioTextView;
     private Button bt_deslogar, bt_excluir, bt_editar;
     private FirebaseFirestore db;
     private String usuarioID, nomeUser, fotoEmString;
     private FirebaseUser user;
     private ProgressBar progressBar;
     private CircleImageView fotoImageView;
-    private ImageView ic_camera;
+    private ImageView ic_camera, delete_foto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class TelaPrincipal extends AppCompatActivity {
         bt_excluir.setOnClickListener(v -> confirmaExcluirCadastroUsuario());
         bt_editar.setOnClickListener(v -> editarDados());
         ic_camera.setOnClickListener(v -> selecionarFoto());
+        delete_foto.setOnClickListener(v -> deletarFotoConfirmacao());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -69,9 +71,9 @@ public class TelaPrincipal extends AppCompatActivity {
                 fotoEmString = documentSnapshot.getString("foto");
                 nomeUsuarioTextView.setText(documentSnapshot.getString("nome"));
                 emailUsuarioTextView.setText(email);
-                byte[] imageEMBytes = Base64.getDecoder().decode(fotoEmString);
-                Bitmap imagemDecodificada = BitmapFactory.decodeByteArray(imageEMBytes, 0, imageEMBytes.length);
-                fotoImageView.setImageBitmap(imagemDecodificada);
+                if (documentSnapshot.getString("foto") != "") {
+                    fotoImageView.setImageBitmap(decodificaFotoString2Bitmap(documentSnapshot.getString("foto")));
+                }
             }
         });
     }
@@ -88,7 +90,7 @@ public class TelaPrincipal extends AppCompatActivity {
         progressBar = findViewById(R.id.progressbar);
         fotoImageView = findViewById(R.id.imagefoto);
         ic_camera = findViewById(R.id.ic_camera);
-        debugTextView = findViewById(R.id.DEBUG);
+        delete_foto = findViewById(R.id.delete_foto);
     }
 
     private void confirmaExcluirCadastroUsuario() {
@@ -133,30 +135,20 @@ public class TelaPrincipal extends AppCompatActivity {
 
     private void editarDados() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
-        documentReference.addSnapshotListener((documentSnapshot, error) -> {
-            if (documentSnapshot != null) {
-                nomeUser = documentSnapshot.getString("nome");
-                fotoEmString = documentSnapshot.getString("foto");
-            }
-        });
+        String usuarioTemp = nomeUsuarioTextView.getText().toString();
 
-        if (nomeUser != nomeUsuarioTextView.getText().toString()) {
+        if (!nomeUser.equals(usuarioTemp)) {
             Map<String, Object> usuarioHashMap = new HashMap<>();
-            usuarioHashMap.put("nome", nomeUsuarioTextView.getText().toString());
-            usuarioHashMap.put("foto", fotoEmString);
+            if (!nomeUser.equals(usuarioTemp)) {
+                usuarioHashMap.put("nome", nomeUsuarioTextView.getText().toString());
+            }
+//        usuarioHashMap.put("foto", fotoEmString);
             db.collection("Usuarios")
                     .document(usuarioID)
                     .update(usuarioHashMap)
-                    .addOnSuccessListener(unused -> Log.d("db_sucesso", "Sucesso ao EDITAR os dados" + usuarioHashMap))
+                    .addOnSuccessListener(unused -> Log.d("db_sucesso", "Sucesso ao EDITAR os dados"))
                     .addOnFailureListener(e -> Log.d("db_erro", "Erro ao EDITAR os dados" + e));
-
         }
-       /* db.collection("Usuarios")
-                .document(usuarioID)
-                .update("nome", nomeUsuario.getText().toString())
-                .addOnSuccessListener(unused -> Log.d("db", "Sucesso ao Alterar os dados"))
-                .addOnFailureListener(e -> Log.d("db_erro", "Erro ao Alterar os dados" + e));*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -166,14 +158,8 @@ public class TelaPrincipal extends AppCompatActivity {
         if (requestCode == 1) {
             try {
                 assert data != null;
-                Bitmap fotoRegistrada = (Bitmap) data.getExtras().get("data");
-                fotoImageView.setImageBitmap(fotoRegistrada);
-                byte[] fotoEmBytes;
-                ByteArrayOutputStream streamDaFotoEmBytes = new ByteArrayOutputStream();
-                fotoRegistrada.compress(Bitmap.CompressFormat.PNG, 70, streamDaFotoEmBytes);
-                fotoEmBytes = streamDaFotoEmBytes.toByteArray();
-                fotoEmString = Base64.getEncoder().encodeToString(fotoEmBytes);
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                fotoEmString = codificaFotoBitmap2String((Bitmap) data.getExtras().get("data"));
+//                FirebaseFirestore db = FirebaseFirestore.getInstance();
                 Map<String, Object> usuarioHashMap = new HashMap<>();
                 usuarioHashMap.put("foto", fotoEmString);
                 db.collection("Usuarios")
@@ -191,6 +177,47 @@ public class TelaPrincipal extends AppCompatActivity {
     private void selecionarFoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, 1);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private Bitmap decodificaFotoString2Bitmap(String fotoEmString) {
+        byte[] imageEMBytes = Base64.getDecoder().decode(fotoEmString);
+        return BitmapFactory.decodeByteArray(imageEMBytes, 0, imageEMBytes.length);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private String codificaFotoBitmap2String(Bitmap fotoCapturada) {
+        fotoImageView.setImageBitmap(fotoCapturada);
+        ByteArrayOutputStream streamDaFotoEmBytes = new ByteArrayOutputStream();
+        fotoCapturada.compress(Bitmap.CompressFormat.PNG, 70, streamDaFotoEmBytes);
+        byte[] fotoEmBytes = streamDaFotoEmBytes.toByteArray();
+        return Base64.getEncoder().encodeToString(fotoEmBytes);
+    }
+
+    private void deletarFotoConfirmacao() {
+        AlertDialog.Builder msgBox = new AlertDialog.Builder(TelaPrincipal.this);
+        msgBox.setTitle("Excluir Foto");
+        msgBox.setMessage("Tem certeza que deseja excluir?");
+        msgBox.setPositiveButton("Sim", (dialog, which) -> {
+            deletarFoto();
+        });
+        msgBox.setNegativeButton("Não", (dialog, which) -> {
+                })
+                .show();
+    }
+
+    public void deletarFoto() {
+        progressBar.setVisibility(View.VISIBLE);
+        Map<String, Object> usuarioHashMap = new HashMap<>();
+        usuarioHashMap.put("foto", "");
+        db.collection("Usuarios")
+                .document(usuarioID)
+                .update(usuarioHashMap)
+                .addOnSuccessListener(unused -> Log.d("db_sucesso", "Sucesso ao DELETAR foto"))
+                .addOnFailureListener(e -> Log.d("db_erro", "Erro ao DELETAR foto " + e));
+        Drawable myDrawable = getResources().getDrawable(R.drawable.ic_user);
+        fotoImageView.setImageDrawable(myDrawable);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
 }
