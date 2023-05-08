@@ -37,8 +37,8 @@ public class TelaPrincipal extends AppCompatActivity {
     private TextView nomeUsuarioTextView, emailUsuarioTextView;
     private Button bt_deslogar, bt_excluir, bt_editar;
     private FirebaseFirestore db;
-    private String usuarioID, nomeUser, fotoEmString;
-    private FirebaseUser user;
+    private String fotoEmString, nomeUsuario;
+
     private ProgressBar progressBar;
     private CircleImageView fotoImageView;
     private ImageView ic_camera, delete_foto;
@@ -62,26 +62,27 @@ public class TelaPrincipal extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String usuarioID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         String email = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail();
         DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
-
         documentReference.addSnapshotListener((documentSnapshot, error) -> {
             if (documentSnapshot != null) {
-                nomeUser = documentSnapshot.getString("nome");
+                nomeUsuario = documentSnapshot.getString("nome");
                 fotoEmString = documentSnapshot.getString("foto");
-                nomeUsuarioTextView.setText(documentSnapshot.getString("nome"));
+                nomeUsuarioTextView.setText(nomeUsuario);
                 emailUsuarioTextView.setText(email);
-                if (documentSnapshot.getString("foto") != "") {
-                    fotoImageView.setImageBitmap(decodificaFotoString2Bitmap(documentSnapshot.getString("foto")));
-                }
+               /* if (!fotoEmString.isEmpty()) {
+                    fotoImageView.setImageBitmap(decodificaFotoString2Bitmap(fotoEmString));
+                } else {
+                    Drawable myDrawable = getResources().getDrawable(R.drawable.ic_user);
+                    fotoImageView.setImageDrawable(myDrawable);
+                }*/
             }
         });
     }
 
     private void iniciarComponentes() {
-        db = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        usuarioID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         nomeUsuarioTextView = findViewById(R.id.textNomeUsuario);
         emailUsuarioTextView = findViewById(R.id.textEmailUsuario);
         bt_deslogar = findViewById(R.id.bt_deslogar);
@@ -98,10 +99,12 @@ public class TelaPrincipal extends AppCompatActivity {
         msgBox.setTitle("Excluir Usuário");
         msgBox.setMessage("Tem certeza que deseja excluir?");
         msgBox.setPositiveButton("Sim", (dialog, which) -> {
+            Handler handler = new Handler();
             progressBar.setVisibility(View.VISIBLE);
+            deletarFoto();
             excluirDadosUsuario();
             excluirCadastroUsuario();
-            Handler handler = new Handler();
+
             handler.postDelayed(this::deslogar, 2000);
         });
         msgBox.setNegativeButton("Não", (dialog, which) -> {
@@ -110,6 +113,7 @@ public class TelaPrincipal extends AppCompatActivity {
     }
 
     private void excluirCadastroUsuario() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         user.delete()
                 .addOnSuccessListener(unused -> Log.d("db", "Sucesso ao excluir Usuário"))
                 .addOnFailureListener(e -> Log.d("db_erro", "Erro ao excluir Usuário" + e));
@@ -125,7 +129,7 @@ public class TelaPrincipal extends AppCompatActivity {
 
     private void excluirDadosUsuario() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         db.collection("Usuarios")
                 .document(usuarioID)
                 .delete()
@@ -136,10 +140,12 @@ public class TelaPrincipal extends AppCompatActivity {
     private void editarDados() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String usuarioTemp = nomeUsuarioTextView.getText().toString();
+        String usuarioID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
-        if (!nomeUser.equals(usuarioTemp)) {
+
+        if (!nomeUsuario.equals(usuarioTemp)) {
             Map<String, Object> usuarioHashMap = new HashMap<>();
-            if (!nomeUser.equals(usuarioTemp)) {
+            if (!nomeUsuario.equals(usuarioTemp)) {
                 usuarioHashMap.put("nome", nomeUsuarioTextView.getText().toString());
             }
 //        usuarioHashMap.put("foto", fotoEmString);
@@ -155,11 +161,12 @@ public class TelaPrincipal extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        String usuarioID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         if (requestCode == 1) {
             try {
                 assert data != null;
                 fotoEmString = codificaFotoBitmap2String((Bitmap) data.getExtras().get("data"));
-//                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
                 Map<String, Object> usuarioHashMap = new HashMap<>();
                 usuarioHashMap.put("foto", fotoEmString);
                 db.collection("Usuarios")
@@ -207,7 +214,8 @@ public class TelaPrincipal extends AppCompatActivity {
     }
 
     public void deletarFoto() {
-        progressBar.setVisibility(View.VISIBLE);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String usuarioID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         Map<String, Object> usuarioHashMap = new HashMap<>();
         usuarioHashMap.put("foto", "");
         db.collection("Usuarios")
@@ -217,7 +225,6 @@ public class TelaPrincipal extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.d("db_erro", "Erro ao DELETAR foto " + e));
         Drawable myDrawable = getResources().getDrawable(R.drawable.ic_user);
         fotoImageView.setImageDrawable(myDrawable);
-        progressBar.setVisibility(View.INVISIBLE);
     }
 
 }
