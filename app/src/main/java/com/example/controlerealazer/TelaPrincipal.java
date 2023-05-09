@@ -72,12 +72,11 @@ public class TelaPrincipal extends AppCompatActivity {
                 fotoEmString = documentSnapshot.getString("foto");
                 nomeUsuarioTextView.setText(nomeUsuario);
                 emailUsuarioTextView.setText(email);
-               /* if (!fotoEmString.isEmpty()) {
-                    fotoImageView.setImageBitmap(decodificaFotoString2Bitmap(fotoEmString));
-                } else {
-                    Drawable myDrawable = getResources().getDrawable(R.drawable.ic_user);
-                    fotoImageView.setImageDrawable(myDrawable);
-                }*/
+                if (fotoEmString != null) {
+                    if (!fotoEmString.isEmpty()) {
+                        fotoImageView.setImageBitmap(decodificaFotoString2Bitmap(fotoEmString));
+                    }
+                }
             }
         });
     }
@@ -101,11 +100,9 @@ public class TelaPrincipal extends AppCompatActivity {
         msgBox.setPositiveButton("Sim", (dialog, which) -> {
             Handler handler = new Handler();
             progressBar.setVisibility(View.VISIBLE);
-            deletarFoto();
             excluirDadosUsuario();
             excluirCadastroUsuario();
-
-            handler.postDelayed(this::deslogar, 2000);
+            handler.postDelayed(this::deslogar, 3000);
         });
         msgBox.setNegativeButton("Não", (dialog, which) -> {
                 })
