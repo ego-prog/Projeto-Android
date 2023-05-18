@@ -35,13 +35,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TelaPrincipal extends AppCompatActivity {
     private TextView nomeUsuarioTextView, emailUsuarioTextView;
-    private Button bt_deslogar, bt_excluir, bt_editar;
+    private Button bt_excluir, bt_editar, bt_qrcode;
     private FirebaseFirestore db;
     private String fotoEmString, nomeUsuario;
 
     private ProgressBar progressBar;
     private CircleImageView fotoImageView;
-    private ImageView ic_camera, delete_foto;
+    private ImageView ic_camera, delete_foto, credencialImageView, sairImageView, usuarioImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +51,13 @@ public class TelaPrincipal extends AppCompatActivity {
 
         iniciarComponentes();
 
-        bt_deslogar.setOnClickListener(v -> deslogar());
+        sairImageView.setOnClickListener(v -> deslogar());
         bt_excluir.setOnClickListener(v -> confirmaExcluirCadastroUsuario());
         bt_editar.setOnClickListener(v -> editarDados());
         ic_camera.setOnClickListener(v -> selecionarFoto());
         delete_foto.setOnClickListener(v -> deletarFotoConfirmacao());
+        credencialImageView.setOnClickListener(v -> TelaQrCode());
+        usuarioImageView.setOnClickListener(v -> DadosCadastro());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -84,13 +86,17 @@ public class TelaPrincipal extends AppCompatActivity {
     private void iniciarComponentes() {
         nomeUsuarioTextView = findViewById(R.id.textNomeUsuario);
         emailUsuarioTextView = findViewById(R.id.textEmailUsuario);
-        bt_deslogar = findViewById(R.id.bt_deslogar);
         bt_excluir = findViewById(R.id.bt_excluir);
         bt_editar = findViewById(R.id.bt_editar);
         progressBar = findViewById(R.id.progressbar);
         fotoImageView = findViewById(R.id.imagefoto);
         ic_camera = findViewById(R.id.ic_camera);
         delete_foto = findViewById(R.id.delete_foto);
+        credencialImageView = findViewById(R.id.credencial_image_view);
+        sairImageView = findViewById(R.id.sair_image_view);
+        usuarioImageView = findViewById(R.id.usuario_image_view);
+
+
     }
 
     private void confirmaExcluirCadastroUsuario() {
@@ -222,6 +228,17 @@ public class TelaPrincipal extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.d("db_erro", "Erro ao DELETAR foto " + e));
         Drawable myDrawable = getResources().getDrawable(R.drawable.ic_user);
         fotoImageView.setImageDrawable(myDrawable);
+    }
+
+
+    private void TelaQrCode() {
+        Intent intent = new Intent(this, QrCode.class);
+        startActivity(intent);
+    }
+
+    private void DadosCadastro(){
+        Intent intent = new Intent(this, DadosCadastro.class);
+        startActivity(intent);
     }
 
 }

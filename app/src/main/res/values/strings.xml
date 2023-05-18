@@ -17,4 +17,8 @@
     <string name="icone_user">Icone User</string>
     <string name="icone_email">Icone Email</string>
     <string name="photo">Foto</string>
+    <string name="qrcode">QrCode</string>
+    <string name="credencial">Credencial</string>
+    <string name="sair">Sair</string>
+    <string name="usuario">Dados Cadastrais</string>
 </resources>

@@ -51,4 +51,11 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:layout_marginTop">10dp</item>
     </style>
+
+    <style name="nomeUsuario">
+        <item name="minHeight">48dp</item>
+        <item name="minWidth">48dp</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>
