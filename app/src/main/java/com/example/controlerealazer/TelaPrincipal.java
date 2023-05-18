@@ -35,29 +35,24 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TelaPrincipal extends AppCompatActivity {
     private TextView nomeUsuarioTextView, emailUsuarioTextView;
-    private Button bt_excluir, bt_editar, bt_qrcode;
+    private Button bt_excluir, bt_editar;
     private FirebaseFirestore db;
     private String fotoEmString, nomeUsuario;
 
     private ProgressBar progressBar;
     private CircleImageView fotoImageView;
-    private ImageView ic_camera, delete_foto, credencialImageView, sairImageView, usuarioImageView;
+    private ImageView ic_camera, delete_foto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_principal);
         Objects.requireNonNull(getSupportActionBar()).hide();
-
         iniciarComponentes();
-
-        sairImageView.setOnClickListener(v -> deslogar());
         bt_excluir.setOnClickListener(v -> confirmaExcluirCadastroUsuario());
         bt_editar.setOnClickListener(v -> editarDados());
         ic_camera.setOnClickListener(v -> selecionarFoto());
         delete_foto.setOnClickListener(v -> deletarFotoConfirmacao());
-        credencialImageView.setOnClickListener(v -> TelaQrCode());
-        usuarioImageView.setOnClickListener(v -> DadosCadastro());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -92,11 +87,6 @@ public class TelaPrincipal extends AppCompatActivity {
         fotoImageView = findViewById(R.id.imagefoto);
         ic_camera = findViewById(R.id.ic_camera);
         delete_foto = findViewById(R.id.delete_foto);
-        credencialImageView = findViewById(R.id.credencial_image_view);
-        sairImageView = findViewById(R.id.sair_image_view);
-        usuarioImageView = findViewById(R.id.usuario_image_view);
-
-
     }
 
     private void confirmaExcluirCadastroUsuario() {
@@ -104,22 +94,20 @@ public class TelaPrincipal extends AppCompatActivity {
         msgBox.setTitle("Excluir Usuário");
         msgBox.setMessage("Tem certeza que deseja excluir?");
         msgBox.setPositiveButton("Sim", (dialog, which) -> {
-            Handler handler = new Handler();
+            Handler handlerDeslogar = new Handler();
+            Handler handlerExcluirCadastro = new Handler();
             progressBar.setVisibility(View.VISIBLE);
             excluirDadosUsuario();
-            excluirCadastroUsuario();
-            handler.postDelayed(this::deslogar, 3000);
+            handlerExcluirCadastro.postDelayed(this::excluirCadastroUsuario, 1000);
+            handlerDeslogar.postDelayed(this::deslogar, 3000);
         });
         msgBox.setNegativeButton("Não", (dialog, which) -> {
-                })
-                .show();
+        }).show();
     }
 
     private void excluirCadastroUsuario() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        user.delete()
-                .addOnSuccessListener(unused -> Log.d("db", "Sucesso ao excluir Usuário"))
-                .addOnFailureListener(e -> Log.d("db_erro", "Erro ao excluir Usuário" + e));
+        user.delete().addOnSuccessListener(unused -> Log.d("db", "Sucesso ao excluir Usuário")).addOnFailureListener(e -> Log.d("db_erro", "Erro ao excluir Usuário" + e));
     }
 
     private void deslogar() {
@@ -133,8 +121,7 @@ public class TelaPrincipal extends AppCompatActivity {
     private void excluirDadosUsuario() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        db.collection("Usuarios")
-                .document(usuarioID)
+        db.collection("Usuarios").document(usuarioID)
                 .delete()
                 .addOnSuccessListener(unused -> Log.d("db", "Sucesso ao excluir os dados"))
                 .addOnFailureListener(e -> Log.d("db_erro", "Erro ao excluir os dados" + e));
@@ -152,11 +139,7 @@ public class TelaPrincipal extends AppCompatActivity {
                 usuarioHashMap.put("nome", nomeUsuarioTextView.getText().toString());
             }
 //        usuarioHashMap.put("foto", fotoEmString);
-            db.collection("Usuarios")
-                    .document(usuarioID)
-                    .update(usuarioHashMap)
-                    .addOnSuccessListener(unused -> Log.d("db_sucesso", "Sucesso ao EDITAR os dados"))
-                    .addOnFailureListener(e -> Log.d("db_erro", "Erro ao EDITAR os dados" + e));
+            db.collection("Usuarios").document(usuarioID).update(usuarioHashMap).addOnSuccessListener(unused -> Log.d("db_sucesso", "Sucesso ao EDITAR os dados")).addOnFailureListener(e -> Log.d("db_erro", "Erro ao EDITAR os dados" + e));
         }
     }
 
@@ -172,11 +155,7 @@ public class TelaPrincipal extends AppCompatActivity {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 Map<String, Object> usuarioHashMap = new HashMap<>();
                 usuarioHashMap.put("foto", fotoEmString);
-                db.collection("Usuarios")
-                        .document(usuarioID)
-                        .update(usuarioHashMap)
-                        .addOnSuccessListener(unused -> Log.d("db_sucesso", "Sucesso ao EDITAR os dados"))
-                        .addOnFailureListener(e -> Log.d("db_erro", "Erro ao EDITAR os dados" + e));
+                db.collection("Usuarios").document(usuarioID).update(usuarioHashMap).addOnSuccessListener(unused -> Log.d("db_sucesso", "Sucesso ao EDITAR os dados")).addOnFailureListener(e -> Log.d("db_erro", "Erro ao EDITAR os dados" + e));
 
             } catch (Exception e) {
                 Log.e("Camera", "Erro ao carregar foto" + e);
@@ -212,8 +191,7 @@ public class TelaPrincipal extends AppCompatActivity {
             deletarFoto();
         });
         msgBox.setNegativeButton("Não", (dialog, which) -> {
-                })
-                .show();
+        }).show();
     }
 
     public void deletarFoto() {
@@ -221,24 +199,8 @@ public class TelaPrincipal extends AppCompatActivity {
         String usuarioID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         Map<String, Object> usuarioHashMap = new HashMap<>();
         usuarioHashMap.put("foto", "");
-        db.collection("Usuarios")
-                .document(usuarioID)
-                .update(usuarioHashMap)
-                .addOnSuccessListener(unused -> Log.d("db_sucesso", "Sucesso ao DELETAR foto"))
-                .addOnFailureListener(e -> Log.d("db_erro", "Erro ao DELETAR foto " + e));
+        db.collection("Usuarios").document(usuarioID).update(usuarioHashMap).addOnSuccessListener(unused -> Log.d("db_sucesso", "Sucesso ao DELETAR foto")).addOnFailureListener(e -> Log.d("db_erro", "Erro ao DELETAR foto " + e));
         Drawable myDrawable = getResources().getDrawable(R.drawable.ic_user);
         fotoImageView.setImageDrawable(myDrawable);
     }
-
-
-    private void TelaQrCode() {
-        Intent intent = new Intent(this, QrCode.class);
-        startActivity(intent);
-    }
-
-    private void DadosCadastro(){
-        Intent intent = new Intent(this, DadosCadastro.class);
-        startActivity(intent);
-    }
-
 }

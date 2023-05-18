@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Menu">
+
+        <ImageView
+            android:id="@+id/usuario_image_view"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/user"
+            app:layout_constraintEnd_toStartOf="@id/credencial_image_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/credencial_image_view" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/usuario"
+            app:layout_constraintEnd_toEndOf="@id/usuario_image_view"
+            app:layout_constraintStart_toStartOf="@id/usuario_image_view"
+            app:layout_constraintTop_toBottomOf="@id/usuario_image_view" />
+
+        <ImageView
+            android:id="@+id/credencial_image_view"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginTop="75dp"
+            android:src="@drawable/credential"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/credencial"
+            app:layout_constraintEnd_toEndOf="@id/credencial_image_view"
+            app:layout_constraintStart_toStartOf="@id/credencial_image_view"
+            app:layout_constraintTop_toBottomOf="@id/credencial_image_view" />
+
+        <ImageView
+            android:id="@+id/sair_image_view"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/noun_exit_1016635"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/credencial_image_view"
+            app:layout_constraintTop_toTopOf="@id/credencial_image_view" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sair"
+            app:layout_constraintEnd_toEndOf="@id/sair_image_view"
+            app:layout_constraintStart_toStartOf="@id/sair_image_view"
+            app:layout_constraintTop_toBottomOf="@id/sair_image_view" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
