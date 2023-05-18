@@ -49,9 +49,10 @@ public class QrCode extends AppCompatActivity {
         documentReference.addSnapshotListener(
                 (documentSnapshot, error) -> {
                     if (documentSnapshot != null) {
-                        nomeTextView.setText(documentSnapshot.getString("nome"));
+                        String nome = documentSnapshot.getString("nome");
+                        nomeTextView.setText(nome);
                         fotoEmString = documentSnapshot.getString("foto");
-                        criarQrCode();
+                        criarQrCode(nome);
                         if (fotoEmString != null) {
                             if (!fotoEmString.isEmpty()) {
                                 photoIDImageView.setImageBitmap(decodificarFotoString2Bitmap(fotoEmString));
@@ -74,11 +75,10 @@ public class QrCode extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(imageEMBytes, 0, imageEMBytes.length);
     }
 
-    private void criarQrCode() {
-        String usuarioID = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+    private void criarQrCode(String string) {
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(usuarioID, BarcodeFormat.QR_CODE, 300, 300);
+            BitMatrix bitMatrix = multiFormatWriter.encode(string, BarcodeFormat.QR_CODE, 300, 300);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             qrCodeImageView.setImageBitmap(bitmap);
